@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://di8k5ycifaa03"]
+
+[ext_resource type="Script" path="res://Arrow.gd" id="1_wi63y"]
+
+[sub_resource type="Curve" id="Curve_ftret"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.714713), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Arrow" type="Node2D"]
+script = ExtResource("1_wi63y")
+
+[node name="Line" type="Line2D" parent="."]
+points = PackedVector2Array(89, 40)
+width = 4.0
+width_curve = SubResource("Curve_ftret")
+
+[node name="Head" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(2.08165e-12, 2.08165e-12, -10, 5, -8, 2.08165e-12, -10, -5)

@@ -1,0 +1,222 @@
+[gd_scene load_steps=11 format=3 uid="uid://bggr750rph1y7"]
+
+[ext_resource type="PackedScene" uid="uid://bofge3xgrhpfp" path="res://spider/spider_model.gltf" id="1_3b0wg"]
+[ext_resource type="Script" path="res://spider/spider.gd" id="2_0csxg"]
+[ext_resource type="Script" path="res://spider/spider_ik.gd" id="2_jth6t"]
+[ext_resource type="Material" uid="uid://canave36drn7" path="res://spider/CalfColor.tres" id="3_y1qsq"]
+[ext_resource type="Material" uid="uid://bi4r375l2x3ja" path="res://spider/ThighColor.tres" id="4_yasc6"]
+[ext_resource type="Material" uid="uid://qa486ajyd51l" path="res://eye_color.tres" id="6_4de3g"]
+[ext_resource type="Script" path="res://spider/spider_cam.gd" id="6_4ifns"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_asihu"]
+albedo_color = Color(0.180392, 0.133333, 0.184314, 1)
+
+[sub_resource type="Environment" id="Environment_4f6mw"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ftjew"]
+dof_blur_amount = 0.0
+
+[node name="spider_model" instance=ExtResource("1_3b0wg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_0csxg")
+
+[node name="LBLeg" parent="." index="0"]
+transform = Transform3D(0, 0.4, 0, -0.4, 0, 0, 0, 0, 0.44, 0.14, 0.706, 0.5)
+
+[node name="LBCalf" parent="LBLeg/Skeleton3D" index="0"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="LBThigh" parent="LBLeg/Skeleton3D" index="1"]
+material_override = ExtResource("4_yasc6")
+
+[node name="LBIK" type="SkeletonIK3D" parent="LBLeg/Skeleton3D" index="2" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"LBThighBone"
+tip_bone = &"LBFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/LBMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../LBTarget")
+adjacent_leg1 = NodePath("../../../LMLeg/Skeleton3D/LMIK")
+adjacent_leg2 = NodePath("../../../LFLeg/Skeleton3D/LFIK")
+adjacent_leg3 = NodePath("../../../RBLeg/Skeleton3D/RBIK")
+
+[node name="Body" parent="." index="1"]
+transform = Transform3D(1.01015, -3.52327e-16, 3.52327e-16, 3.52327e-16, 1.01015, -3.52327e-16, -3.52327e-16, 3.52327e-16, 1.01015, 2.08165e-12, 0.2, 2.08165e-12)
+material_override = SubResource("StandardMaterial3D_asihu")
+
+[node name="Eyes" parent="Body" index="0"]
+material_override = ExtResource("6_4de3g")
+
+[node name="Mouth" parent="Body" index="1"]
+transform = Transform3D(0.203305, 1.12382e-24, -3.89382e-25, 8.06309e-25, 0.203305, 3.89382e-25, 1.12382e-24, -1.12382e-24, 0.0829621, -4.33681e-19, 0.453479, -0.858543)
+material_override = ExtResource("3_y1qsq")
+
+[node name="LMLeg" parent="." index="2"]
+transform = Transform3D(0, 0.4, 0, -0.4, 0, 0, 0, 0, 0.44, 0.14, 0.706, 0)
+
+[node name="LMIK" type="SkeletonIK3D" parent="LMLeg/Skeleton3D" index="0" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"LMThighBone"
+tip_bone = &"LMFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/LMMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../LMTarget")
+adjacent_leg1 = NodePath("../../../LBLeg/Skeleton3D/LBIK")
+adjacent_leg2 = NodePath("../../../LFLeg/Skeleton3D/LFIK")
+adjacent_leg3 = NodePath("../../../RMLeg/Skeleton3D/RMIK")
+
+[node name="LMCalf" parent="LMLeg/Skeleton3D" index="1"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="LMThigh" parent="LMLeg/Skeleton3D" index="2"]
+material_override = ExtResource("4_yasc6")
+
+[node name="LFLeg" parent="." index="3"]
+transform = Transform3D(0, 0.4, 0, -0.4, 0, 0, 0, 0, 0.44, 0.14, 0.706, -0.5)
+
+[node name="LFCalfBone" parent="LFLeg/Skeleton3D" index="0"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="LFThighBone" parent="LFLeg/Skeleton3D" index="1"]
+material_override = ExtResource("4_yasc6")
+
+[node name="LFIK" type="SkeletonIK3D" parent="LFLeg/Skeleton3D" index="2" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"LFThighBone"
+tip_bone = &"LFFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/LFMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../LFTarget")
+adjacent_leg1 = NodePath("../../../LBLeg/Skeleton3D/LBIK")
+adjacent_leg2 = NodePath("../../../LMLeg/Skeleton3D/LMIK")
+adjacent_leg3 = NodePath("../../../RBLeg/Skeleton3D/RBIK")
+
+[node name="RFLeg" parent="." index="4"]
+transform = Transform3D(0, -0.4, -7.16851e-08, -0.4, 0, -7.16851e-08, 6.51683e-08, 6.51683e-08, -0.44, -0.14, 0.706, -0.5)
+
+[node name="RFCalf" parent="RFLeg/Skeleton3D" index="0"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="RFThigh" parent="RFLeg/Skeleton3D" index="1"]
+material_override = ExtResource("4_yasc6")
+
+[node name="RFIK" type="SkeletonIK3D" parent="RFLeg/Skeleton3D" index="2" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"RFThighBone"
+tip_bone = &"RFFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/RFMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../RFTarget")
+adjacent_leg1 = NodePath("../../../RMLeg/Skeleton3D/RMIK")
+adjacent_leg2 = NodePath("../../../RBLeg/Skeleton3D/RBIK")
+adjacent_leg3 = NodePath("../../../LFLeg/Skeleton3D/LFIK")
+
+[node name="RMLeg" parent="." index="5"]
+transform = Transform3D(0, -0.4, -7.16851e-08, -0.4, 0, -7.16851e-08, 6.51683e-08, 6.51683e-08, -0.44, -0.14, 0.706, 0)
+
+[node name="RMCalf" parent="RMLeg/Skeleton3D" index="0"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="RMThigh" parent="RMLeg/Skeleton3D" index="1"]
+material_override = ExtResource("4_yasc6")
+
+[node name="RMIK" type="SkeletonIK3D" parent="RMLeg/Skeleton3D" index="2" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"RMThighBone"
+tip_bone = &"RMFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/RMMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../RMTarget")
+adjacent_leg1 = NodePath("../../../RFLeg/Skeleton3D/RFIK")
+adjacent_leg2 = NodePath("../../../RBLeg/Skeleton3D/RBIK")
+adjacent_leg3 = NodePath("../../../LMLeg/Skeleton3D/LMIK")
+
+[node name="RBLeg" parent="." index="6"]
+transform = Transform3D(0, -0.4, -7.16851e-08, -0.4, 0, -7.16851e-08, 6.51683e-08, 6.51683e-08, -0.44, -0.14, 0.706, 0.5)
+
+[node name="RBCalf" parent="RBLeg/Skeleton3D" index="0"]
+material_override = ExtResource("3_y1qsq")
+
+[node name="RBThigh" parent="RBLeg/Skeleton3D" index="1"]
+material_override = ExtResource("4_yasc6")
+
+[node name="RBIK" type="SkeletonIK3D" parent="RBLeg/Skeleton3D" index="2" node_paths=PackedStringArray("pull", "adjacent_leg1", "adjacent_leg2", "adjacent_leg3")]
+process_priority = 1
+root_bone = &"RBThighBone"
+tip_bone = &"RBFootBone"
+use_magnet = true
+magnet = Vector3(0, 10, 0)
+target_node = NodePath("../../../Marks/RBMark")
+script = ExtResource("2_jth6t")
+pull = NodePath("../../../RBTarget")
+adjacent_leg1 = NodePath("../../../RFLeg/Skeleton3D/RFIK")
+adjacent_leg2 = NodePath("../../../RMLeg/Skeleton3D/RMIK")
+adjacent_leg3 = NodePath("../../../LBLeg/Skeleton3D/LBIK")
+
+[node name="Camera3D" type="Camera3D" parent="." index="7" node_paths=PackedStringArray("spider")]
+transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e-16, 8.74228e-08, -3.48787e-16, -1, 2.08165e-12, 1.4, -5)
+top_level = true
+projection = 1
+size = 2.2
+script = ExtResource("6_4ifns")
+spider = NodePath("..")
+
+[node name="LBTarget" type="Marker3D" parent="." index="8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, 0.895765)
+
+[node name="LMTarget" type="Marker3D" parent="." index="9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, -0.104235)
+
+[node name="LFTarget" type="Marker3D" parent="." index="10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, -1.10424)
+
+[node name="RBTarget" type="Marker3D" parent="." index="11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, 0.895765)
+
+[node name="RMTarget" type="Marker3D" parent="." index="12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, -0.104235)
+
+[node name="RFTarget" type="Marker3D" parent="." index="13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, -1.10424)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." index="14"]
+environment = SubResource("Environment_4f6mw")
+camera_attributes = SubResource("CameraAttributesPractical_ftjew")
+
+[node name="Marks" type="Node3D" parent="." index="15"]
+
+[node name="LBMark" type="Marker3D" parent="Marks" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, 1)
+top_level = true
+
+[node name="LMMark" type="Marker3D" parent="Marks" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, 2.08165e-12)
+top_level = true
+
+[node name="LFMark" type="Marker3D" parent="Marks" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.08165e-12, -1)
+top_level = true
+
+[node name="RBMark" type="Marker3D" parent="Marks" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, 1)
+top_level = true
+
+[node name="RMMark" type="Marker3D" parent="Marks" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, 2.08165e-12)
+top_level = true
+
+[node name="RFMark" type="Marker3D" parent="Marks" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.08165e-12, -1)
+top_level = true
