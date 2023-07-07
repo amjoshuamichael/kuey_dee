@@ -16,13 +16,17 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=384
-window/size/viewport_height=216
+window/size/viewport_width=768
+window/size/viewport_height=432
 window/size/initial_screen=10
-window/size/window_width_override=1024
-window/size/window_height_override=576
+window/size/window_width_override=2048
+window/size/window_height_override=1152
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/amano-ldtk-importer/plugin.cfg")
 
 [input]
 
@@ -83,6 +87,7 @@ game_action_3={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.780392, 0.862745, 0.815686, 1)
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true

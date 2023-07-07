@@ -76,7 +76,12 @@ func _process(delta):
 		leg_width = MAX_LEG_WIDTH
 		snap_legs_to_target = false
 	else:
-		leg_width = lerp(leg_width, JUMPING_LEG_WIDTH, 16 * delta)
+		var leg_width_target = clamp(
+			(-dist_to_floor + 10) / 50 + MAX_LEG_WIDTH, 
+			JUMPING_LEG_WIDTH, 
+			MAX_LEG_WIDTH
+		)
+		leg_width = lerp(leg_width, leg_width_target, 16 * delta)
 		snap_legs_to_target = true
 
 func set_pos(targ, pos_offset):

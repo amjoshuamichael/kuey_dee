@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 
 const SPEED = 120.0
-const JUMP_VELOCITY = 150.0
-const DJUMP_VELOCITY = 180.0
+const JUMP_VELOCITY = 120.0
+const DJUMP_VELOCITY = 170.0
 const FALLING_GRAVITY = 600.0
 const MAX_SLOPE_SPEED = 100.0
 const SLOPE_ACC = 0.2
@@ -12,6 +12,7 @@ var GRAVITY = 400.0 # 1200
 const PARALLEL_WIDTH = 100.0 # a little over 6 blocks
 const MIN_PARALLEL_LENGTH = 8.0
 const PARALLEL_SNAPS = 4
+const PARALLEL_JUMP_VELOCITY = 150.0
 
 const EX_COMPASS_REACH = 4.0
 const COMPASS_JUMP_VELOCITY = 40.0
@@ -19,7 +20,6 @@ var compass_radius: float = 0.0
 var compass_hit_pos = null
 
 var walk_velocity = 0.0
-var slope_velocity = 0.0
 
 var used_djump = false
 
@@ -38,29 +38,20 @@ func _physics_process(delta):
 	else:
 		walk_velocity = 0.0
 		
-	if not is_on_floor():
+	if is_on_floor():
+		used_djump = false
+	else:
 		if velocity.y > 0.0:
 			velocity.y += FALLING_GRAVITY * delta
 		else:
 			velocity.y += GRAVITY * delta
-	
+
 	var floor_query = PhysicsRayQueryParameters2D.create(global_position, global_position + Vector2.DOWN * 100.0, 1);
 	var floor_cast = get_world_2d().direct_space_state.intersect_ray(floor_query)
 	if floor_cast.is_empty():
 		$SpiderViewport/spider_model.dist_to_floor = INF
 	else:
 		$SpiderViewport/spider_model.dist_to_floor = floor_cast.position.distance_to(global_position)
-	
-	if is_on_floor():
-		used_djump = false
-		if floor_cast.is_empty() or floor_cast.normal.x == 0:
-			slope_velocity = 0.0
-		else:
-			slope_velocity = lerp(slope_velocity, floor_cast.normal.x * MAX_SLOPE_SPEED, SLOPE_ACC)
-	else:
-		slope_velocity = lerp(slope_velocity, 0.0, SLOPE_ACC)
-		if abs(slope_velocity) < 0.05:
-			slope_velocity = 0.0
 	
 	var indicators = {
 		parallel = $/root/World/Indicators/Parallel,
@@ -98,7 +89,7 @@ func _physics_process(delta):
 		
 		if parallel_hit_data:
 			self.position = parallel_hit_data.position
-			self.velocity = Vector2.UP * 160
+			self.velocity = Vector2.UP * PARALLEL_JUMP_VELOCITY
 			used_djump = false
 
 	if Input.is_action_pressed("game_action_2"):
@@ -147,7 +138,7 @@ func _physics_process(delta):
 		indicators.compass.end_position = null
 		indicators.compass.visible = false	
 
-	velocity.x = walk_velocity + slope_velocity
+	velocity.x = walk_velocity
 
 	move_and_slide()
 	
@@ -170,7 +161,7 @@ func parallel():
 	var first_hit_data = null
 	var hit_data = null
 	
-	for n in 1000:
+	for n in 1200:
 		var l_raycast = PhysicsRayQueryParameters2D.create(checkpos, checkpos + left * PARALLEL_WIDTH, 2)
 		var l_intersec = space.intersect_ray(l_raycast)
 		var r_raycast = PhysicsRayQueryParameters2D.create(checkpos, checkpos + right * PARALLEL_WIDTH, 2)
